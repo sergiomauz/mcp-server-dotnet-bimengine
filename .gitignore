@@ -1,0 +1,13 @@
+.vs/
+
+RevitMcpServer/bin/
+RevitMcpServer/obj/
+
+Application/bin/
+Application/obj/
+
+Infrastructure/bin/
+Infrastructure/obj/
+
+bin/
+obj/
