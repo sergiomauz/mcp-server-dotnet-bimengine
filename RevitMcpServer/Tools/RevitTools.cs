@@ -21,8 +21,8 @@ namespace RevitMcpServer.Tools
             var process = "firefox";
             var savePath = $"C:\\captures\\firefox_{process}_{DateTime.Now:yyyyMMdd_HHmmss}.png";
 
-            var imageCaptured = ScreenshotHandler.Execute(process, savePath);
-            if (imageCaptured)
+            var imageCaptured = ScreenshotOcrHandler.Execute(process, savePath);
+            if (!string.IsNullOrEmpty(imageCaptured))
             {
                 // Convert image to base64 for any porpouse, could be OCR
                 var imageBytes = File.ReadAllBytes(savePath);
