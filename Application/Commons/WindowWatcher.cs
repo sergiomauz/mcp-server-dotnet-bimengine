@@ -12,15 +12,15 @@ namespace Application.Commons
             _targetProcessName = processName;
         }
 
-        public IntPtr WaitForActiveWindow(int timeoutSeconds = 10)
+        public IntPtr WaitForActiveWindow(int timeoutAttempts = 10)
         {
-            var endTime = DateTime.Now.AddSeconds(timeoutSeconds);
+            var endTime = DateTime.Now.AddSeconds(timeoutAttempts);
             while (DateTime.Now < endTime)
             {
                 uint processId;
 
                 var activeWindow = WindowsAPI.GetForegroundWindow();
-                _ = WindowsAPI.GetWindowThreadProcessId(activeWindow, out processId);
+                WindowsAPI.GetWindowThreadProcessId(activeWindow, out processId);
                 try
                 {
                     var proc = Process.GetProcessById((int)processId);

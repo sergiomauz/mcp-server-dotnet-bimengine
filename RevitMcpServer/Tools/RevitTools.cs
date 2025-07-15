@@ -19,7 +19,7 @@ namespace RevitMcpServer.Tools
         public static object ScreenshotFirefox(string message)
         {
             var process = "firefox";
-            var savePath = $"C:\\captures\\firefox_{process}_{DateTime.Now:yyyyMMdd_HHmmss}.png";
+            var savePath = $"C:\\revit-mcp-server\\captures\\firefox_{process}_{DateTime.Now:yyyyMMdd_HHmmss}.png";
 
             var imageCaptured = ScreenshotOcrHandler.Execute(process, savePath);
             if (!string.IsNullOrEmpty(imageCaptured))
@@ -30,7 +30,7 @@ namespace RevitMcpServer.Tools
 
             }
 
-            return $"Hello Firefox! {process}";
+            return $"Domain: {imageCaptured}";
         }
     }
 }

@@ -14,3 +14,14 @@ builder.Services
     .WithStdioServerTransport()
     .WithToolsFromAssembly();
 await builder.Build().RunAsync();
+
+
+//using Application.UseCases.Screenshot;
+
+
+//var process = "firefox";
+//var savePath = $"C:\\revit-mcp-server\\captures\\firefox_{process}_{DateTime.Now:yyyyMMdd_HHmmss}.png";
+
+//var imageCaptured = ScreenshotOcrHandler.Execute(process, savePath);
+
+//Console.WriteLine(imageCaptured);

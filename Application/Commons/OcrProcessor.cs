@@ -8,8 +8,11 @@ namespace Application.Commons
     {
         public string RunOcr(Bitmap bitmap)
         {
-            string tessDataPath = @"C:\tessdata"; // Ruta a la carpeta con datos de Tesseract (descarga los .traineddata)
+            // Ruta a la carpeta con datos de Tesseract (descarga los .traineddata)
+            string tessDataPath = @"C:\revit-mcp-server\tesseract";
             string lang = "eng";
+
+            //
             using (var engine = new TesseractEngine(tessDataPath, lang, EngineMode.Default))
             {
                 using (var ms = new MemoryStream())
