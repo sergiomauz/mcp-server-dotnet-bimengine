@@ -16,8 +16,8 @@ namespace Application.Commons
                 return success;
             }
 
-            int width = rect.Right - rect.Left;
-            int height = rect.Bottom - rect.Top;
+            var width = rect.Right - rect.Left;
+            var height = rect.Bottom - rect.Top;
             using (var bmp = new Bitmap(width, height, PixelFormat.Format32bppArgb))
             {
                 using (var gfxBmp = Graphics.FromImage(bmp))

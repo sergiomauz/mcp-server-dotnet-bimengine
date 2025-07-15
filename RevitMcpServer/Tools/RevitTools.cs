@@ -19,16 +19,10 @@ namespace RevitMcpServer.Tools
         public static object ScreenshotFirefox(string message)
         {
             var process = "firefox";
-            var savePath = $"C:\\revit-mcp-server\\captures\\firefox_{process}_{DateTime.Now:yyyyMMdd_HHmmss}.png";
+            var screenshotPath = $"C:\\revit-mcp-server\\captures\\firefox_{process}_{DateTime.Now:yyyyMMdd_HHmmss}.png";
+            var croppedImagePath = $"C:\\revit-mcp-server\\captures\\firefox_cropped_{DateTime.Now:yyyyMMdd_HHmmss}.png";
 
-            var imageCaptured = ScreenshotOcrHandler.Execute(process, savePath);
-            if (!string.IsNullOrEmpty(imageCaptured))
-            {
-                // Convert image to base64 for any porpouse, could be OCR
-                var imageBytes = File.ReadAllBytes(savePath);
-                var base64Image = Convert.ToBase64String(imageBytes);
-
-            }
+            var imageCaptured = ScreenshotOcrHandler.Execute(process, screenshotPath, croppedImagePath);
 
             return $"Domain: {imageCaptured}";
         }
