@@ -9,5 +9,8 @@ Application/obj/
 Infrastructure/bin/
 Infrastructure/obj/
 
+Commons/bin/
+Commons/obj/
+
 bin/
 obj/
