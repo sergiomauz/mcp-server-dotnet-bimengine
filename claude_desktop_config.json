@@ -1,0 +1,8 @@
+{
+	"mcpServers": {
+		"Revit": {
+			"command": "C:\\revit-mcp-server\\app\\RevitMcpServer\\bin\\Debug\\net8.0\\RevitMcpServer.exe",
+			"args": []
+		}
+	}
+}
