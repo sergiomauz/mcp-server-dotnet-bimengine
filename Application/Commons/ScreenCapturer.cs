@@ -7,29 +7,26 @@ namespace Application.Commons
 {
     public class ScreenCapturer
     {
-        public bool CaptureWindow(IntPtr handle, string savePath)
+        public Bitmap? CaptureWindow(IntPtr handle)
         {
             RECT rect;
-            bool success = false;
             if (!WindowsAPI.GetWindowRect(handle, out rect))
             {
-                return success;
+                return null;
             }
 
             var width = rect.Right - rect.Left;
             var height = rect.Bottom - rect.Top;
-            using (var bmp = new Bitmap(width, height, PixelFormat.Format32bppArgb))
-            {
-                using (var gfxBmp = Graphics.FromImage(bmp))
-                {
-                    gfxBmp.CopyFromScreen(rect.Left, rect.Top, 0, 0, new Size(width, height), CopyPixelOperation.SourceCopy);
-                }
+            var bmp = new Bitmap(width, height, PixelFormat.Format32bppArgb);
 
-                bmp.Save(savePath, ImageFormat.Png);
-                success = true;
+
+            using (var gfxBmp = Graphics.FromImage(bmp))
+            {
+                gfxBmp.CopyFromScreen(rect.Left, rect.Top, 0, 0, new Size(width, height), CopyPixelOperation.SourceCopy);
             }
 
-            return success;
+            return bmp;
+
         }
     }
 }

@@ -4,14 +4,14 @@ using System.Runtime.InteropServices;
 using Application.Commons;
 
 
-namespace Application.UseCases.Screenshot
+namespace Application.UseCases.FirefoxScreenshotOcr
 {
-    public static class ScreenshotOcrHandler
+    public static class FirefoxScreenshotOcrHandler
     {
-        private static Bitmap PreprocessImage(Bitmap original)
+        private static Bitmap _preprocessImage(Bitmap original)
         {
-            // Convertir a 24bpp para evitar problemas de stride y PixelFormat
-            var sourceBitmap = new Bitmap(original.Width, original.Height, PixelFormat.Format24bppRgb);
+            // Convert to 24bpp to avoid stride and PixelFormat issues
+            var sourceBitmap = new Bitmap(original.Width, original.Height, PixelFormat.Format64bppPArgb);
             using (var g = Graphics.FromImage(sourceBitmap))
             {
                 g.DrawImage(original, 0, 0, original.Width, original.Height);
@@ -21,7 +21,6 @@ namespace Application.UseCases.Screenshot
             var rect = new Rectangle(0, 0, sourceBitmap.Width, sourceBitmap.Height);
             var sourceData = sourceBitmap.LockBits(rect, ImageLockMode.ReadOnly, sourceBitmap.PixelFormat);
             var resultData = resultBitmap.LockBits(rect, ImageLockMode.WriteOnly, resultBitmap.PixelFormat);
-
             var bytesPerPixel = Image.GetPixelFormatSize(sourceBitmap.PixelFormat) / 8;
             var height = sourceBitmap.Height;
             var stride = sourceData.Stride;
@@ -38,15 +37,15 @@ namespace Application.UseCases.Screenshot
                 {
                     int idx = rowOffset + x * bytesPerPixel;
 
-                    byte blue = pixelBuffer[idx];
-                    byte green = pixelBuffer[idx + 1];
-                    byte red = pixelBuffer[idx + 2];
+                    var blue = pixelBuffer[idx];
+                    var green = pixelBuffer[idx + 1];
+                    var red = pixelBuffer[idx + 2];
 
                     // Gray scale
-                    byte gray = (byte)(0.299 * red + 0.587 * green + 0.114 * blue);
+                    var gray = (byte)(0.299 * red + 0.587 * green + 0.114 * blue);
 
                     // To binary
-                    byte binarized = (gray > 150) ? (byte)255 : (byte)0;
+                    var binarized = (gray > 150) ? (byte)255 : (byte)0;
                     resultBuffer[idx] = binarized;
                     resultBuffer[idx + 1] = binarized;
                     resultBuffer[idx + 2] = binarized;
@@ -60,34 +59,30 @@ namespace Application.UseCases.Screenshot
             return resultBitmap;
         }
 
-        private static string GetDomainFromFirefoxScreenshot(string screenshotPath, string croppedImagePath)
+        private static string _getDomainFromFirefoxScreenshot(Bitmap capturedBitmap, string croppedImagePath)
         {
             try
             {
-                using (var img = new Bitmap(screenshotPath))
+                // Set values considering resolution
+                // x, y, width, height
+                var addressBarArea = new Rectangle(200, 60, 800, 50);
+                using (var croppedImg = capturedBitmap.Clone(addressBarArea, capturedBitmap.PixelFormat))
                 {
-                    // Set values considering resolution
-                    // x, y, width, height
-                    var addressBarArea = new Rectangle(200, 60, 800, 50);
+                    // Save cropped image
+                    croppedImg.Save(croppedImagePath, ImageFormat.Png);
 
-                    using (var croppedImg = img.Clone(addressBarArea, img.PixelFormat))
-                    {
-                        // Guarda el recorte original si quieres verificar
-                        croppedImg.Save(croppedImagePath, ImageFormat.Png);
+                    // Preprocess nad improve OCR and get domain
+                    var preprocessedImg = _preprocessImage(croppedImg);
+                    var ocrProcessor = new OcrProcessor();
+                    var extractedText = ocrProcessor.RunOcr(preprocessedImg);
+                    if (string.IsNullOrWhiteSpace(extractedText))
+                        return "No characters were detected.";
 
-                        // Preprocesar para mejorar OCR
-                        var preprocessedImg = PreprocessImage(croppedImg);
-                        var ocrProcessor = new OcrProcessor();
-                        var extractedText = ocrProcessor.RunOcr(preprocessedImg);
+                    // Clean and get first line. Domain always
+                    // extractedText = extractedText.Trim().Split(' ')[0].Split('\n')[0].Split('\n')[0];
 
-                        if (string.IsNullOrWhiteSpace(extractedText))
-                            return "No characters were detected.";
-
-                        // Clean and get first line
-                        extractedText = extractedText.Trim().Split(' ')[0].Split('\n')[0].Split('\n')[0];
-
-                        return extractedText;
-                    }
+                    //
+                    return $"Detected:\n\n\n=============\n{extractedText}\n=============\n\n\n";
                 }
             }
             catch (Exception ex)
@@ -103,13 +98,18 @@ namespace Application.UseCases.Screenshot
             if (windowHandle != nint.Zero)
             {
                 var capturer = new ScreenCapturer();
-                var capturedSuccessfully = capturer.CaptureWindow(windowHandle, screenshotPath);
-                var result = GetDomainFromFirefoxScreenshot(screenshotPath, croppedImagePath);
+                using (var capturedBitmap = capturer.CaptureWindow(windowHandle))
+                {
+                    var result = _getDomainFromFirefoxScreenshot(capturedBitmap, croppedImagePath);
 
-                return result;
+
+                    capturedBitmap.Save(screenshotPath, ImageFormat.Png);
+
+                    return result;
+                }
             }
 
-            return string.Empty;
+            return "No Firefox window was detected.";
         }
     }
 }

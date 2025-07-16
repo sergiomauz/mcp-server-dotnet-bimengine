@@ -16,12 +16,12 @@
 //await builder.Build().RunAsync();
 
 
-using Application.UseCases.Screenshot;
+using Application.UseCases.FirefoxScreenshotOcr;
 
 
 var process = "firefox";
 var screenshotPath = $"C:\\revit-mcp-server\\captures\\firefox_{process}_{DateTime.Now:yyyyMMdd_HHmmss}.png";
 var croppedImagePath = $"C:\\revit-mcp-server\\captures\\firefox_cropped_{DateTime.Now:yyyyMMdd_HHmmss}.png";
-var imageCaptured = ScreenshotOcrHandler.Execute(process, screenshotPath, croppedImagePath);
+var imageCaptured = FirefoxScreenshotOcrHandler.Execute(process, screenshotPath, croppedImagePath);
 
 Console.WriteLine(imageCaptured);

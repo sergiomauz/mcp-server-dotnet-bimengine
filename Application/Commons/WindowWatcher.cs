@@ -18,7 +18,6 @@ namespace Application.Commons
             while (DateTime.Now < endTime)
             {
                 uint processId;
-
                 var activeWindow = WindowsAPI.GetForegroundWindow();
                 WindowsAPI.GetWindowThreadProcessId(activeWindow, out processId);
                 try
