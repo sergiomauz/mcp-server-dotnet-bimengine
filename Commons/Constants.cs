@@ -8,7 +8,9 @@
         /// </summary>
         public const string TESS_DATA_PATH = "C:\\revit-mcp-server\\tessdata";
 
-
+        /// <summary>
+        /// Path to directorey where app save captured images
+        /// </summary>
         public const string CAPTURES = "C:\\revit-mcp-server\\captures";
     }
 }

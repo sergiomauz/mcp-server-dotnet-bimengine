@@ -9,7 +9,7 @@ namespace RevitMcpServer.Tools
     [McpServerToolType]
     public static class BimEngineTools
     {
-        [McpServerTool, Description("Echoes the message back to the client.")]
+        [McpServerTool, Description("Echoes the message back to the client. The future for Revit :)")]
         public static string RevitScreenshotOcr(string message)
         {
             return $"Hello Revit!: {message}";
