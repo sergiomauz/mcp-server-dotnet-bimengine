@@ -17,12 +17,21 @@ namespace RevitMcpServer.Tools
         [McpServerTool, Description("Captures a screenshot of a Firefox window. Wait for 10 attempts, then it fails.")]
         public static object FirefoxScreenshotOcr(string message)
         {
+            // Path to the folder with Tesseract data (downloads the .traineddata)
+            // Downloaded from https://github.com/tesseract-ocr/tessdata
+            var tessDataPath = @"C:\revit-mcp-server\tessdata";
+
+            // Process to detect
             var process = "firefox";
-            var screenshotPath = $"C:\\revit-mcp-server\\captures\\firefox_screenshot_{process}_{DateTime.Now:yyyyMMdd_HHmmss}.png";
+
+            // Path to save images
+            var screenshotPath = $"C:\\revit-mcp-server\\captures\\firefox_{process}_{DateTime.Now:yyyyMMdd_HHmmss}.png";
             var croppedImagePath = $"C:\\revit-mcp-server\\captures\\firefox_cropped_{DateTime.Now:yyyyMMdd_HHmmss}.png";
 
-            var imageCaptured = FirefoxScreenshotOcrHandler.Execute(process, screenshotPath, croppedImagePath);
+            //
+            var imageCaptured = FirefoxScreenshotOcrHandler.Execute(process, tessDataPath, screenshotPath, croppedImagePath);
 
+            //
             return $"Result: {imageCaptured}";
         }
     }
